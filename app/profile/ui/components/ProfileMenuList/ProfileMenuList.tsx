@@ -73,7 +73,7 @@ function MenuGroup({
 
 export default function ProfileMenuList() {
   const pathname = usePathname();
-  const { mutate: logout, isPending: loggingOut } = useLogout();
+  const { logout} = useLogout();
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -84,24 +84,11 @@ export default function ProfileMenuList() {
         <button
           type="button"
           onClick={() => logout()}
-          disabled={loggingOut}
+          // disabled={loggingOut}
           className="group flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-left transition-colors hover:bg-red-50 focus-visible:bg-red-50 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-60"
         >
-          {loggingOut ? (
-            <Loader2
-              aria-hidden="true"
-              className="h-[18px] w-[18px] shrink-0 animate-spin text-red-500"
-            />
-          ) : (
-            <LogOut
-              aria-hidden="true"
-              className="h-[18px] w-[18px] shrink-0 text-red-500"
-              strokeWidth={1.75}
-            />
-          )}
-          <span className="flex-1 text-sm font-medium text-red-600">
-            {loggingOut ? "Chiqilmoqda..." : "Chiqish"}
-          </span>
+          
+         
         </button>
       </div>
     </div>
