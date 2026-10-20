@@ -2,8 +2,9 @@
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
-import { useSignup } from "../shared/lib/useAuth";
+// import { useSignup } from "../shared/lib/useAuth";
 import { LeftArrowIcon } from "../shared/icons";
+import { useSignup } from "../hooks/auth/useSignup";
 
 interface SignupFormValues {
   name: string;
@@ -23,7 +24,7 @@ function SignupForm() {
   } = useForm<SignupFormValues>();
 
   const onSubmit = (data: SignupFormValues) => {
-    signup(data, {
+    signup({ ...data, verificationToken: "" }, {
       onSuccess: () => {
         router.replace("/profile");
       },
