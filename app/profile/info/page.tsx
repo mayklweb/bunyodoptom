@@ -6,6 +6,7 @@ import { usePersonalInfoForm } from "@/app/profile/model/hooks/usePersonalInfoFo
 import { DeleteAccountSection } from "../accountSettings/DeleteAccountSection";
 import { ProfileField } from "../ui/sections/profileField/ProfileField";
 import { useLogout } from "@/app/hooks/auth/useLogout";
+// import { useLogout } from "@/app/hooks/auth/useLogout";
 
 function InfoPage() {
   const {
@@ -19,7 +20,7 @@ function InfoPage() {
     cancelEditing,
   } = usePersonalInfoForm();
 
-  const { mutate: logout, isPending: loggingOut } = useLogout();
+  const { logout } = useLogout();
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") toggleEditSave();
