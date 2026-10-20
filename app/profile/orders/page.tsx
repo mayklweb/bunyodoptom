@@ -3,10 +3,13 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 
-import { Order } from "@/app/types";
 import { CartIcon, CloseIcon, EyeIcon, LocationIcon } from "@/app/shared/icons";
 import { useOrders } from "@/app/hooks/orders/useOrders";
 import { useCancelOrder } from "@/app/hooks/orders/useCancelOrder";
+
+type OrdersPageOrder = NonNullable<
+  ReturnType<typeof useOrders>["data"]
+>[number];
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */
@@ -34,20 +37,23 @@ const STATUS_ALIASES: Record<string, StatusKey> = {
 };
 
 function getStatus(raw: string | undefined) {
-  const normalized = (raw ?? "").toLowerCase().replace(/[’ʻʼ`]/g, "'").trim();
+  const normalized = (raw ?? "")
+    .toLowerCase()
+    .replace(/[’ʻʼ`]/g, "'")
+    .trim();
   const key = STATUS_ALIASES[normalized];
   return key
     ? { key, ...STATUS_META[key] }
     : { key: null, label: raw || "Noma'lum", dot: "bg-gray-400" };
 }
 
-function canCancel(order: Order) {
+function canCancel(order: OrdersPageOrder) {
   const { key } = getStatus(order.status);
   return key === "shipping" || key === "preparing";
 }
 
-function getTotal(order: Order) {
-  return order.products.reduce((sum, p) => sum + p.price * p.qty, 0);
+function getTotal(order: OrdersPageOrder) {
+  return order.products.reduce((sum, p) => sum + Number(p.price) * p.qty, 0);
 }
 
 // Fixed formatting — avoids server/client locale mismatches
@@ -117,7 +123,11 @@ function StateMessage({
 
 function OrdersSkeleton() {
   return (
-    <div className="flex flex-col gap-3" aria-busy="true" aria-label="Yuklanmoqda">
+    <div
+      className="flex flex-col gap-3"
+      aria-busy="true"
+      aria-label="Yuklanmoqda"
+    >
       {[0, 1, 2].map((i) => (
         <div key={i} className={`${panelClass} space-y-1 p-2`}>
           {[0, 1, 2, 3].map((j) => (
@@ -224,7 +234,9 @@ function ProductRow({
         </span>
         <span className="block text-xs text-gray-400">{detail}</span>
       </span>
-      <span className="shrink-0 text-sm font-medium text-gray-800">{total}</span>
+      <span className="shrink-0 text-sm font-medium text-gray-800">
+        {total}
+      </span>
     </li>
   );
 }
@@ -244,8 +256,12 @@ function OrdersPage() {
     reset: resetCancel,
   } = useCancelOrder();
 
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [cancelTarget, setCancelTarget] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrdersPageOrder | null>(
+    null,
+  );
+  const [cancelTarget, setCancelTarget] = useState<OrdersPageOrder | null>(
+    null,
+  );
 
   const closeCancelDialog = () => {
     if (isCancelling) return;
@@ -260,7 +276,7 @@ function OrdersPage() {
     });
   };
 
-  const askCancel = (order: Order) => {
+  const askCancel = (order: OrdersPageOrder) => {
     setSelectedOrder(null);
     resetCancel();
     setCancelTarget(order);
@@ -343,28 +359,15 @@ function OrdersPage() {
             </div>
           </div>
 
-          {selectedOrder.address && (
-            <div className="mx-1.5 flex items-start gap-2 rounded-2xl bg-gray-50 px-3.5 py-2.5">
-              <LocationIcon className="mt-0.5 h-4 w-4 shrink-0 text-gray-400" />
-              <span className="text-sm text-gray-600">
-                {[
-                  selectedOrder.address.region,
-                  selectedOrder.address.district,
-                  selectedOrder.address.address,
-                ]
-                  .filter(Boolean)
-                  .join(", ")}
-              </span>
-            </div>
-          )}
+          
 
           <ul className="flex-1 overflow-y-auto overscroll-contain px-1.5 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {selectedOrder.products.map((item, i) => (
               <ProductRow
                 key={`${item.name}-${i}`}
-                name={item.name ?? "Mahsulot"}
-                detail={`${item.qty} dona × ${formatSum(item.price)}`}
-                total={formatSum(item.price * item.qty)}
+                name={typeof item.name === "string" ? item.name : "Mahsulot"}
+                detail={`${item.qty} dona × ${formatSum(Number(item.price))}`}
+                total={formatSum(Number(item.price) * item.qty)}
               />
             ))}
           </ul>
@@ -440,7 +443,10 @@ function OrdersPage() {
                 className={dangerButton}
               >
                 {isCancelling && (
-                  <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
+                  <Loader2
+                    aria-hidden="true"
+                    className="h-4 w-4 animate-spin"
+                  />
                 )}
                 {isCancelling ? "Bekor qilinmoqda..." : "Ha, bekor qilish"}
               </button>
@@ -481,7 +487,7 @@ function OrderCard({
   onCancel,
   isCancelling,
 }: {
-  order: Order;
+  order: OrdersPageOrder;
   onViewDetails: () => void;
   onCancel: () => void;
   isCancelling: boolean;
@@ -497,16 +503,7 @@ function OrderCard({
           <span className="text-sm font-semibold text-gray-800">
             #{order.id}
           </span>
-          {order.address?.district && (
-            <>
-              <span aria-hidden="true" className="text-gray-300">
-                ·
-              </span>
-              <span className="truncate text-xs text-gray-400">
-                {order.address.district}
-              </span>
-            </>
-          )}
+         
         </div>
         <StatusBadge status={order.status} />
       </div>
@@ -516,9 +513,9 @@ function OrderCard({
         {previewProducts.map((item, i) => (
           <ProductRow
             key={`${item.name}-${i}`}
-            name={item.name ?? "Mahsulot"}
+            name={String(item.name ?? "Mahsulot")}
             detail={`${item.qty} dona`}
-            total={formatSum(item.price * item.qty)}
+            total={formatSum(Number(item.price) * item.qty)}
           />
         ))}
         {remaining > 0 && (
@@ -550,7 +547,11 @@ function OrderCard({
               Bekor qilish
             </button>
           )}
-          <button type="button" onClick={onViewDetails} className={primaryButton}>
+          <button
+            type="button"
+            onClick={onViewDetails}
+            className={primaryButton}
+          >
             <EyeIcon className="h-4 w-4" />
             Batafsil
           </button>
