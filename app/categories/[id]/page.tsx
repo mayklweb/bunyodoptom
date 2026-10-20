@@ -12,14 +12,13 @@ import { FilterIcon } from "@/app/shared/icons";
 import { useCategories } from "@/app/hooks/categories/useCategories";
 import { useProducts } from "@/app/hooks/products/useProducts";
 import { useBrands } from "@/app/hooks/brands/useBrands";
-import { useCategoryStore } from "@/app/store/useCategoryStore";
 
 export default function CategoryProductsPage() {
   const router = useRouter();
   const params = useParams();
   const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
-  const { selectedCategoryId, setSelectedCategoryId } = useCategoryStore();
-  const id = rawId ? Number(rawId) : (selectedCategoryId ?? 0);
+  // const { selectedCategoryId, setSelectedCategoryId } = useCategoryStore();
+  // const id = rawId ? Number(rawId) : (selectedCategoryId ?? 0);
 
   const { data: categories, isLoading: categoriesLoading } = useCategories();
   const { data: allProducts, isLoading: productsLoading } = useProducts();
@@ -27,7 +26,7 @@ export default function CategoryProductsPage() {
 
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const activeCategory = categories?.find((c: any) => Number(c.id) === id);
+  // const activeCategory = categories?.find((c: any) => Number(c.id) === id);
 
   const {
     filters,
@@ -39,7 +38,7 @@ export default function CategoryProductsPage() {
     applyPending,
     resetPending,
     resetAll,
-  } = useProductFilters(allProducts, id);
+  } = useProductFilters(allProducts);
 
   const productsReady = !productsLoading && !!allProducts;
 
@@ -79,7 +78,7 @@ export default function CategoryProductsPage() {
                     <div className="h-5 w-32 bg-gray-100 animate-pulse rounded-lg" />
                   ) : (
                     <h1 className="text-base font-bold text-gray-900 truncate">
-                      {activeCategory?.name ?? "Mahsulotlar"}
+                      {/* {activeCategory?.name ?? "Mahsulotlar"} */}
                     </h1>
                   )}
                   {productsReady && (
@@ -119,7 +118,7 @@ export default function CategoryProductsPage() {
                       onChange={setFilters}
                       brands={brands}
                       categories={categories}
-                      defaultCategoryId={id}
+                      // defaultCategoryId={id}
                     />
                   </div>
                 </aside>
@@ -174,7 +173,7 @@ export default function CategoryProductsPage() {
         onReset={resetPending}
         brands={brands}
         categories={categories}
-        defaultCategoryId={id}
+        // defaultCategoryId={id}
       />
     </section>
   );

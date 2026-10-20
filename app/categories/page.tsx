@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 // import { useCategories } from "@/app/shared/lib/hooks/useCategories";
-import { useCategoryStore } from "@/app/store/useCategoryStore";
+// import { useCategoryStore } from "@/app/store/useCategoryStore";
 // import { useProducts } from "@/app/shared/lib/hooks/useProducts";
 import { CategoriesType, ProductsType } from "../types";
 import { ProductCard } from "@/app/components";
@@ -35,7 +35,7 @@ export default function CategoriesPage() {
   const { data: categories, isLoading: categoriesLoading } = useCategories();
   const { data: allProducts, isLoading: productsLoading } = useProducts();
   const { data: brands } = useBrands();
-  const { selectedCategoryId, setSelectedCategoryId } = useCategoryStore();
+  // const { selectedCategoryId, setSelectedCategoryId } = useCategoryStore();
 
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -45,9 +45,9 @@ export default function CategoriesPage() {
   // const desktopCategoryId =
   //   selectedCategoryId ?? (categories?.[0]?.id || 0);
 
-  const activeCategory = categories?.find(
-    (c: CategoriesType) => c.id === selectedCategoryId,
-  );
+  // const activeCategory = categories?.find(
+  //   (c: CategoriesType) => c.id === selectedCategoryId,
+  // );
 
   const {
     filters,
@@ -64,12 +64,12 @@ export default function CategoriesPage() {
   const productsReady = !productsLoading && !!products;
 
   const handleMobileClick = (category: CategoriesType) => {
-    setSelectedCategoryId(category.id);
+    // setSelectedCategoryId(category.id);
     router.push(`/categories/${category.id}`);
   };
 
   const handleDesktopCategoryClick = (category: CategoriesType) => {
-    setSelectedCategoryId(category.id);
+    // setSelectedCategoryId(category.id);
   };
 
   return (
