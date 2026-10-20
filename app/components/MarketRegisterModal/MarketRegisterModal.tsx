@@ -1,8 +1,7 @@
-// components/MarketRegisterModal.tsx
 "use client";
 import { useState } from "react";
 import { CloseIcon } from "@/app/shared/icons";
-import { useCreateMarket } from "@/app/shared/lib/hooks/useMarket";
+import { useCreateMarket } from "@/app/hooks/markets/useCreateMarket";
 
 interface Props {
   onSuccess: (marketId: number) => void;

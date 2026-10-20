@@ -1,7 +1,7 @@
 export interface CategoriesType {
   id: number;
   name: string;
-  icon: string;
+  image: string;
 }
 
 export interface ProductsType {
@@ -29,6 +29,19 @@ export interface UserType {
   name: string; // User last name (optional)
   phone: string; // User phone number
   market_id: string;
+  market_name: string;
+  market_address: string;
+  market_phone: string;
+  market_latitude: number;
+  market_longitude: number;
+  market_status: string;
+  market_created_at: string;
+  market_updated_at: string;
+  birthdate: string;
+  gender: string;
+  email: string;
+  created_at: string;
+  updated_at: string; 
 }
 
 export type OrderStatus = "pending" | "preparing" | "delivered" | "cancelled";

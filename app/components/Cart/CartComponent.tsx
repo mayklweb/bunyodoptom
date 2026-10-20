@@ -1,12 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-import { useCartStore } from "@/app/store/CartStore";
-import { useGetMe, useUser } from "@/app/shared/lib/useAuth";
-import { useAddresses } from "@/app/shared/lib/hooks/useAddresses";
-import { useCheckout } from "@/app/shared/lib/hooks/useCheckout";
-import { useMarketCheck } from "@/app/shared/lib/hooks/useMarketCheck";
 import { CartHeader } from "./CartHeader";
 import { EmptyCart } from "./EmptyCart";
 import { SelectAllToggle } from "./SelectAllToggle";
@@ -16,6 +10,14 @@ import { CheckoutModal } from "./CheckoutModal";
 import { MarketRegisterModal } from "../MarketRegisterModal/MarketRegisterModal";
 import { MobileBottomBar } from "./MobileBottomBar";
 import { useUIStore } from "@/app/store/useUIStore";
+import { useProfile } from "@/app/hooks/user/useProfile";
+import { useCheckout } from "@/app/hooks/orders/useCheckout";
+
+import { useCartStore } from "@/app/store/cart.store";
+import { useMarket } from "@/app/hooks/markets/useMarkets";
+import { useCreateMarket } from "@/app/hooks/markets/useCreateMarket";
+import { useUpdateMarket } from "@/app/hooks/markets/useUpdateMarket";
+import { useDeleteMarket } from "@/app/hooks/markets/useDeleteMarket";
 
 type PaymentMethod = "cash" | "click";
 
@@ -34,17 +36,24 @@ function CartComponent() {
     clearCart,
   } = useCartStore();
 
-  const { setActiveSection, activeSection } = useUIStore();
+  const { setActiveSection } = useUIStore();
   const router = useRouter();
 
-  console.log(activeSection);
-  
-
-  const { data: user } = useUser();
-  const { mutate: getMe } = useGetMe();
-  const { data: addresses } = useAddresses();
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isError: isUserError,
+  } = useProfile();
   const { mutate: checkout, isPending } = useCheckout();
-  const { hasMarket, myMarket, isLoading } = useMarketCheck();
+  const {
+    data: market,
+    isLoading: isStoreLoading,
+    isError: isStoreError,
+    refetch: refetchStore,
+  } = useMarket();
+  const { mutate: createStore, isPending: creating } = useCreateMarket();
+  const { mutate: updateStore, isPending: updating } = useUpdateMarket();
+  const { mutate: deleteStore, isPending: deleting } = useDeleteMarket();
 
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
     null,
@@ -54,34 +63,33 @@ function CartComponent() {
   const [showMarketModal, setShowMarketModal] = useState(false);
   const [pendingMarketId, setPendingMarketId] = useState<number | null>(null);
 
-  useEffect(() => {
-    getMe();
-    if (addresses && !selectedAddressId) {
-      const defaultAddr = addresses.find((a) => a.is_default);
-      if (defaultAddr) setSelectedAddressId(defaultAddr.id);
-    }
-  }, [addresses]);
 
   useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = isModalOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [isModalOpen]);
 
   function handleCheckout() {
-    if (isLoading) return;
+    if (isUserLoading || isStoreLoading || isPending) return;
 
-    if (!hasMarket && !pendingMarketId) {
+    if (isUserError || !user) {
+      alert("Iltimos, tizimga kiring.");
+      return;
+    }
+
+    if (isStoreError) {
+      alert("Do‘kon ma’lumotlarini yuklashda xatolik yuz berdi.");
+      return;
+    }
+
+    if (!market && !pendingMarketId) {
       setShowMarketModal(true);
       return;
     }
 
-    proceedToCheckout(pendingMarketId ?? myMarket?.id ?? null);
+    proceedToCheckout(pendingMarketId ?? market?.id ?? null);
   }
 
   function handleMarketRegistered(marketId: number) {
@@ -108,14 +116,16 @@ function CartComponent() {
       return;
     }
 
-    const products = selectedItems().map((item) => ({
+    const items = selectedItems();
+
+    const products = items.map((item) => ({
       id: item.id,
       name: item.name,
       price: item.price,
       qty: item.count ?? 1,
     }));
 
-    const totalAmount = selectedItems().reduce(
+    const totalAmount = items.reduce(
       (sum, item) => sum + item.price * item.count,
       0,
     );
@@ -134,16 +144,8 @@ function CartComponent() {
       {
         onSuccess: () => {
           setIsModalOpen(false);
-
-          // ✅ Set active section to orders in the store
           setActiveSection("orders");
-
-          // ✅ Optional: Clear cart after successful checkout
           clearCart();
-
-          // ✅ Optional: Show success message
-
-          // ✅ Redirect to account page
           router.push("/profile");
         },
         onError: (error) => {
@@ -154,8 +156,6 @@ function CartComponent() {
         },
       },
     );
-
-    setIsModalOpen(false);
   };
 
   const canCheckout =
@@ -163,7 +163,7 @@ function CartComponent() {
 
   return (
     <>
-      <div className="w-full h-full flex flex-col mt-24">
+      <div className="w-full h-full flex flex-col mt-20">
         <CartHeader />
 
         {cart.length === 0 ? (
@@ -195,9 +195,6 @@ function CartComponent() {
             {/* Desktop summary sidebar */}
             <CartSummary
               user={user}
-              addresses={addresses ?? []}
-              selectedAddressId={selectedAddressId}
-              onSelectAddress={setSelectedAddressId}
               paymentMethod={paymentMethod}
               onPaymentMethodChange={setPaymentMethod}
               totalCount={totalCount()}
@@ -221,9 +218,6 @@ function CartComponent() {
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
               user={user}
-              addresses={addresses ?? []}
-              selectedAddressId={selectedAddressId}
-              onSelectAddress={setSelectedAddressId}
               paymentMethod={paymentMethod}
               onPaymentMethodChange={setPaymentMethod}
               totalCount={totalCount()}

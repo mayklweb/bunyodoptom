@@ -3,10 +3,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCategories } from "@/app/shared/lib/hooks/useCategories";
+// import { useCategories } from "@/app/shared/lib/hooks/useCategories";
 import { useCategoryStore } from "@/app/store/useCategoryStore";
-import { useBrands } from "@/app/shared/lib/hooks/useBrands";
-import { useProducts } from "@/app/shared/lib/hooks/useProducts";
+// import { useProducts } from "@/app/shared/lib/hooks/useProducts";
 import { CategoriesType, ProductsType } from "../types";
 import { ProductCard } from "@/app/components";
 import { FilterIcon } from "@/app/shared/icons";
@@ -14,6 +13,9 @@ import { useProductFilters } from "./shared/lib/useProductFilters";
 import { FilterBottomSheet } from "./desktop/FilterBottomSheet";
 import { FilterPanel } from "./shared/ui/FilterPanel";
 import Link from "next/link";
+import { useBrands } from "../hooks/brands/useBrands";
+import { useProducts } from "../hooks/products/useProducts";
+import { useCategories } from "../hooks/categories/useCategories";
 
 function normalizeProducts(products: ProductsType[]): ProductsType[] {
   return products
@@ -75,42 +77,47 @@ export default function CategoriesPage() {
       {/* ── MOBILE: category grid ─────────────────────────────── */}
       <div className="flex flex-col h-full lg:hidden mt-20">
         {categoriesLoading ? (
-          <div className="grid grid-cols-2 gap-3 px-4 pb-24 mt-24">
+          <div className="grid grid-cols-2 gap-3 px-4 pb-24 mt-5">
             {Array.from({ length: 9 }).map((_, i) => (
               <div
                 key={i}
-                className="rounded-2xl bg-gray-100 animate-pulse aspect-square"
+                className="rounded-2xl bg-gray-100 animate-pulse aspect-square [animation-fill-mode:both]"
+                style={{ animationDelay: `${i * 60}ms` }}
               />
             ))}
           </div>
         ) : (
           <>
-            <div className="px-4 pt-5 pb-3">
+            {/* <div className="px-4 pt-5 pb-3">
               <h1 className="text-xl font-bold text-gray-900">Katalog</h1>
               <p className="text-sm text-gray-400 mt-0.5">
                 {categories?.length ?? 0} ta kategoriya
               </p>
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-2 gap-3 px-4 pb-24">
               {categories?.map((category: CategoriesType) => (
                 <button
                   key={category.id}
+                  type="button"
                   onClick={() => handleMobileClick(category)}
-                  className="flex flex-col bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm active:scale-[0.97] transition-transform text-left"
+                  className="flex flex-col bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm active:scale-[0.97] transition-transform text-left"
                 >
-                  <div className="w-full aspect-4/3 bg-primary/5 relative overflow-hidden rounded-xl">
+                  <div className="w-full aspect-4/3 relative overflow-hidden rounded-2xl">
                     <Image
-                      src={`${category.id}.jpg`}
+                      src={
+                        category.image
+                          ? `https://api.bunyodoptom.uz${category.image}`
+                          : "/placeholder.png"
+                      }
                       alt={category.name}
-                      width={300}
-                      height={225}
-                      className="w-full h-full object-cover"
-                      unoptimized
+                      fill
+                      sizes="(max-width: 640px) 45vw, 25vw"
+                      className="object-cover"
                     />
                   </div>
-                  <div className="px-2 py-2">
-                    <p className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2 text-center">
+                  <div className="pl-4 px-4 py-2">
+                    <p className="text-lg font-semibold text-primary leading-snug line-clamp-2 text-center truncate">
                       {category.name}
                     </p>
                   </div>
@@ -205,7 +212,7 @@ export default function CategoriesPage() {
                     <div className="grid grid-cols-3 xl:grid-cols-4 gap-3">
                       {filtered.map((product: ProductsType, i) => (
                         // <Link key={i} href={`/product/${product.id}`}>
-                          <ProductCard product={product} />
+                        <ProductCard product={product} />
                         // </Link>
                       ))}
                     </div>

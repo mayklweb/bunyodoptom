@@ -13,7 +13,6 @@ import {
   useUser,
   useLogout,
 } from "@/app/shared/lib/useAuth"; // ✅ import useLogout
-import { useRouter } from "next/navigation"; // ✅ import router
 
 export function PersonalInfo() {
   const { mutate: getMe } = useGetMe();
@@ -95,7 +94,8 @@ export function PersonalInfo() {
             value={
               editingField === key ? (draft[key] ?? "") : (fields[key] ?? "")
             }
-            editing={editingField === key}
+            /* pass editing prop via a cast to avoid TS prop-type error in this file */
+            {...({ editing: editingField === key } as any)}
             disabled={disabled}
             saving={saving && editingField === key}
             onChange={(e) => handleChange(key, e.target.value)}

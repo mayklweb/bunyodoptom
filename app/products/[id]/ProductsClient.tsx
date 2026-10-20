@@ -1,8 +1,8 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useProduct } from "@/app/hooks/products/useProduct";
+import { useProducts } from "@/app/hooks/products/useProducts";
 
 import Image from "next/image";
-import { useProduct, useProducts } from "@/app/shared/lib/hooks/useProducts";
 
 export default function ProductsClient({ id }: { id: number }) {
   // All products

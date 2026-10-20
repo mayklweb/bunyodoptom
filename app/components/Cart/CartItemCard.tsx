@@ -25,19 +25,31 @@ export function CartItemCard({
   onChangeQty,
   onRemove,
 }: CartItemCardProps) {
+  const imagePath = item.images?.[0]?.url;
+  const imageUrl = imagePath
+    ? `https://api.bunyodoptom.uz${imagePath}`
+    : "/placeholder.png";
+
+  const handleDecrement = () => {
+    if (item.count <= 1) {
+      onRemove(item.id);
+    } else {
+      onChangeQty(item.id, -1);
+    }
+  };
+
   return (
     <div
-      className={`rounded-xl p-2 flex flex-col gap-2 shadow-sm transition-all ${
-        isSelected ? "bg-secondary/10" : "bg-[#E5E6FF]"
-      }`}
+      className={`bg-white rounded-xl p-2 flex flex-col gap-2 shadow-sm transition-all `}
     >
       <div className="w-full flex gap-2">
-        <div className="w-25 h-18.5 rounded-xl bg-gray-100 overflow-hidden shrink-0">
+        <div className="relative w-25 h-18.5 rounded-xl bg-gray-100 overflow-hidden shrink-0">
           <Image
-            src={`https://api.bunyodoptom.uz${item.images[0].url}`}
+            src={imageUrl}
             alt={item.name}
-            width={300}
-            height={225}
+            fill
+            sizes="100px"
+            className="object-cover"
           />
         </div>
         <div className="flex-1 min-w-0 flex flex-col">
@@ -48,12 +60,15 @@ export function CartItemCard({
             {item.name}
           </Link>
           <p className="text-sm sm:text-base font-medium text-gray-900">
-            {(item.price * item.count).toLocaleString()} so'm
+            {(item.price * item.count).toLocaleString("uz-Latn-uz")} so'm
           </p>
         </div>
-        <div
-          className="cursor-pointer shrink-0"
+        <button
+          type="button"
           onClick={() => onToggle(item.id)}
+          aria-pressed={isSelected}
+          aria-label={isSelected ? "Tanlovni bekor qilish" : "Tanlash"}
+          className="cursor-pointer shrink-0"
         >
           <div
             className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${
@@ -64,15 +79,17 @@ export function CartItemCard({
           >
             {isSelected && <CheckIcon className="w-3 h-3 text-white" />}
           </div>
-        </div>
+        </button>
       </div>
 
-      <div className="border border-solid border-accent" />
+      <div className="border border-solid border-light-gray" />
 
       <div className="flex gap-4 items-center justify-end">
         <div className="flex items-center gap-3 bg-gray-100 rounded-xl px-1 py-1">
           <button
-            onClick={() => onChangeQty(item.id, -1)}
+            type="button"
+            onClick={handleDecrement}
+            aria-label={item.count <= 1 ? "O'chirish" : "Kamaytirish"}
             className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-600 hover:text-primary transition-colors cursor-pointer"
           >
             <MinusIcon className="w-5 h-5" />
@@ -81,7 +98,9 @@ export function CartItemCard({
             {item.count}
           </span>
           <button
+            type="button"
             onClick={() => onChangeQty(item.id, 1)}
+            aria-label="Ko'paytirish"
             className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-gray-600 hover:text-primary transition-colors cursor-pointer"
           >
             <PlusIcon className="w-5 h-5" />
@@ -89,7 +108,9 @@ export function CartItemCard({
         </div>
 
         <button
+          type="button"
           onClick={() => onRemove(item.id)}
+          aria-label={`${item.name} mahsulotini o'chirish`}
           className="flex items-center text-sm font-medium gap-2 px-2 py-2 bg-error-foreground text-error rounded-lg cursor-pointer"
         >
           <DeleteIcon className="w-5 h-5" />

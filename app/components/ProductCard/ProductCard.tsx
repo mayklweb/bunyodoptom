@@ -1,5 +1,5 @@
 import { FavoriteIcon } from "@/app/shared/icons";
-import { useFavoritesStore } from "@/app/store/favoritesStore";
+import { useFavoriteStore } from "@/app/store/favourite.store";
 import { ProductsType } from "@/app/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,7 @@ interface Props {
 }
 
 function ProductCard({ product, onClick }: Props) {
-  const { toggleFavorite, isFavorite } = useFavoritesStore();
+  const { toggleFavorite, isFavorite } = useFavoriteStore();
 
   const liked = isFavorite(product.id);
 
@@ -24,21 +24,21 @@ function ProductCard({ product, onClick }: Props) {
 
   const content = (
     <div className="w-full relative">
-      <div className="rounded-xl overflow-hidden mb-2.5">
+      <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden mb-2.5 ">
         <Image
-          width={300}
-          height={225}
           src={imageUrl}
           alt={product.name}
-          className="w-full h-full object-cover"
+          fill
+          sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 18vw"
+          className="object-cover"
         />
       </div>
       <div className="flex flex-col items-start gap-0.5 w-full">
-        <h2 className="w-full font-semibold text-black text-base tracking-tight leading-[100%] truncate">
-          {product.name}
+        <h2 className="w-full font-semibold text-primary text-base tracking-tight leading-[100%] truncate">
+          {product.name.toUpperCase()}
         </h2>
-        <p className="font-semibold text-[#000000cc] text-base tracking-tight">
-          {product.price?.toLocaleString()} so'm
+        <p className="font-semibold text-dark-gray text-base tracking-tight">
+          {product.price?.toLocaleString("uz-Latn-uz")} so'm
         </p>
       </div>
     </div>
@@ -47,8 +47,12 @@ function ProductCard({ product, onClick }: Props) {
   return (
     <div className="relative">
       <button
+        type="button"
         onClick={() => toggleFavorite(product)}
-        className="p-1 absolute top-2 right-2 z-2 bg-white rounded-full cursor-pointer"
+        aria-label={
+          liked ? "Sevimlilardan olib tashlash" : "Sevimlilarga qo'shish"
+        }
+        className="p-1.5 absolute top-2 right-2 z-2 bg-white shadow-sm rounded-full cursor-pointer hover:scale-105 active:scale-95 transition-transform"
       >
         <FavoriteIcon
           className={`w-5 h-5 transition-colors ${
@@ -58,7 +62,13 @@ function ProductCard({ product, onClick }: Props) {
       </button>
 
       {onClick ? (
-        <div onClick={onClick} className={`${cardClass} cursor-pointer`}>
+        <div
+          onClick={onClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && onClick()}
+          className={`${cardClass} cursor-pointer`}
+        >
           {content}
         </div>
       ) : (

@@ -3,13 +3,15 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useProduct, useProducts } from "@/app/shared/lib/hooks/useProducts";
+// import { useProduct, useProducts } from "@/app/shared/lib/hooks/useProducts";
 import { useCartStore } from "@/app/store/CartStore";
 import { FavoriteIcon, MinusIcon, PlusIcon } from "@/app/shared/icons";
 import { useFavoritesStore } from "@/app/store/favoritesStore";
-import { useShuffledProducts } from "@/app/shared/lib/hooks/useShuffledProducts";
+// import { useShuffledProducts } from "@/app/shared/lib/hooks/useShuffledProducts";
 import { ProductsType } from "@/app/types";
 import Link from "next/link";
+import { useProduct } from "@/app/hooks/products/useProduct";
+import { useProducts } from "@/app/hooks/products/useProducts";
 
 function ProductSkeleton() {
   return (
@@ -70,7 +72,7 @@ function Product() {
 
   const { data: products } = useProducts();
   const filtred = normalizeProducts(products);
-  const recomendedProduct = useShuffledProducts<ProductsType>(filtred, 20);
+  // const recomendedProduct = useShuffledProducts<ProductsType>(filtred, 20);
 
   const liked = isFavorite(id);
 
@@ -237,7 +239,7 @@ function Product() {
       </section>
 
       {/* ── Recommended Products ── */}
-      {recomendedProduct.length > 0 && (
+      {/* {recomendedProduct.length > 0 && (
         <section className="pb-20">
           <div className="container">
             <h2 className="text-xl lg:text-2xl font-semibold mb-5">
@@ -257,7 +259,6 @@ function Product() {
                     className="flex flex-col rounded-xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
                   >
                     <Link href={`/product/${item.id}`}>
-                      {/* Thumbnail */}
                       <div className="block relative aspect-4/3 bg-gray-50">
                         <Image
                           src={thumb}
@@ -267,7 +268,6 @@ function Product() {
                         />
                       </div>
 
-                      {/* Body */}
                       <div className="flex flex-col  p-2 flex-1">
                         <p className="text-sm font-semibold">{item.name}</p>
 
@@ -275,7 +275,6 @@ function Product() {
                           {item.price.toLocaleString()} so'm
                         </p>
 
-                        {/* Actions */}
                         <div className="flex items-center gap-2 mt-1">
                           <button
                             onClick={() => toggleFavorite(item)}
@@ -328,7 +327,7 @@ function Product() {
             </div>
           </div>
         </section>
-      )}
+      )} */}
     </div>
   );
 }

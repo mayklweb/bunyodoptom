@@ -1,8 +1,8 @@
 import { ProductCard } from "@/app/components";
 import ProductModal from "@/app/components/ProductModal/ProductModal";
+import { useProducts } from "@/app/hooks/products/useProducts";
 import { useProductModal } from "@/app/shared/lib/hooks/useProductModal";
-import { useProducts } from "@/app/shared/lib/hooks/useProducts";
-import { useShuffledProducts } from "@/app/shared/lib/hooks/useShuffledProducts";
+import { useUIStore } from "@/app/store/useUIStore";
 import { ProductsType } from "@/app/types";
 
 function FavoriteProductsSkeleton() {
@@ -20,16 +20,11 @@ function FavoriteProductsSkeleton() {
                 className="rounded-xl bg-gray-100 overflow-hidden animate-pulse [animation-fill-mode:both]"
                 style={{ animationDelay: `${i * 60}ms` }}
               >
-                {/* Image */}
                 <div className="w-full h-40 sm:h-44 md:h-48 bg-gray-300" />
-                {/* Content */}
                 <div className="p-3 flex flex-col gap-2">
-                  {/* Product name */}
                   <div className="h-3.5 w-3/4 bg-gray-300 rounded-full" />
                   <div className="h-3 w-1/2 bg-gray-200 rounded-full" />
-                  {/* Price */}
                   <div className="h-4 w-2/3 bg-gray-300 rounded-full mt-1" />
-                  {/* Button */}
                   <div className="h-9 w-full bg-gray-200 rounded-xl mt-1" />
                 </div>
               </div>
@@ -44,20 +39,19 @@ function FavoriteProductsSkeleton() {
 function normalizeProducts(products: ProductsType[]): ProductsType[] {
   return products
     ?.filter(
-      (p) => Array.isArray(p.images) && p.images.length > 0 && p.images[0]?.url
+      (p) => Array.isArray(p.images) && p.images.length > 0 && p.images[0]?.url,
     )
     .map((p) => ({
       ...p,
-      mainImage:
-        `https://api.bunyodoptom.uz${p.images[0]?.url}` &&
-        `https://api.bunyodoptom.uz${p.images[1]?.url}`,
+      mainImage: `https://api.bunyodoptom.uz${p.images[0].url}`,
     }));
 }
 
 function FavoriteProducts() {
   const { data: products, isLoading, isError } = useProducts();
-  const filtred = normalizeProducts(products)
-  const favoriteProducts = useShuffledProducts<ProductsType>(filtred, 10);
+  console.log(products);
+  // const filtered = normalizeProducts(products);
+  // const favoriteProducts = useShuffledProducts<ProductsType>(filtered, 10);
   const { selectedProduct, openModal, closeModal } = useProductModal();
 
   if (isLoading) return <FavoriteProductsSkeleton />;
@@ -74,9 +68,9 @@ function FavoriteProducts() {
           </div>
 
           <div className="mt-6 mb-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {favoriteProducts.map((product: ProductsType, i) => (
+            {products.map((product: ProductsType) => (
               <ProductCard
-                key={i}
+                key={product.id}
                 product={product}
                 onClick={() => openModal(product)}
               />

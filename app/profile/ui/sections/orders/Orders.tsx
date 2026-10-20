@@ -96,7 +96,6 @@ export function Orders() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   console.log(orders);
-  
 
   return (
     <div className="w-full h-full">
@@ -231,18 +230,19 @@ export function Orders() {
 
             {/* Actions */}
             <div className="px-5 pb-5 flex gap-2">
-              {selectedOrder.status !== "delivered" && selectedOrder.status !== "cancelled" && (
-                <button
-                  onClick={() => {
-                    cancelOrder(selectedOrder.id);
-                    setSelectedOrder(null);
-                  }}
-                  disabled={isCancelling}
-                  className="flex-1 py-2.5 rounded-xl border border-red-200 text-red-500 text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50"
-                >
-                  Bekor qilish
-                </button>
-              )}
+              {selectedOrder.status !== "delivered" &&
+                selectedOrder.status !== "cancelled" && (
+                  <button
+                    onClick={() => {
+                      cancelOrder(selectedOrder.id);
+                      setSelectedOrder(null);
+                    }}
+                    disabled={isCancelling}
+                    className="flex-1 py-2.5 rounded-xl border border-red-200 text-red-500 text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50"
+                  >
+                    Bekor qilish
+                  </button>
+                )}
               <button
                 onClick={() => setSelectedOrder(null)}
                 className="flex-1 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:opacity-90 transition-opacity"
@@ -270,11 +270,10 @@ function OrderCard({
   isCancelling: boolean;
 }) {
   const status = STATUS[order.status];
-  const previewProducts = order.products
+  const previewProducts = order.products;
   const remaining = order.products.length - 3;
 
   console.log(previewProducts);
-  
 
   return (
     <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">

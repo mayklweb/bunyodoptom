@@ -18,18 +18,18 @@ export const NAV_ITEMS: NavItem[] = [
 export const FIELD_CONFIG: FieldConfig[] = [
   { key: "name", label: "Ism familiya" },
   { key: "phone", label: "Telefon raqam" },
-  { key: "birthdate", label: "Tug'ilgan kun" },
+  { key: "birthdate", label: "Tug'ilgan sana", disabled: true },
   { key: "gender", label: "Jinsi" },
   { key: "email", label: "Elektron pochta" },
 ];
 
 export const INITIAL_FIELDS: ProfileFields = {
-  id: "0987654321",
-  name: "Farrux Bozorboyev",
-  phone: "+998 (33) 513-60-53",
-  birthdate: "24/04/2001-yil",
-  gender: "Erkak",
-  email: "Mavjud emas",
+  id: "",
+  name: "",
+  phone: "",
+  birthdate: "",
+  gender: "",
+  email: "",
 };
 
 export const DISTRICTS = [

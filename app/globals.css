@@ -1,54 +1,54 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+
   --foreground: #171717;
-  --font-nunito: var(--font-nunito);
+  /* --font-sans: var(--font-mulish-sans); */
   --radius: 0.625rem;
-  --gray: #e5e7eb ;
-  --background: #ffffff;
+  /* --gray: #e5e7eb ; */
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: #cecfff;
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #2e3192;
   --primary-foreground: #ffffff;
   --secondary: #cecfff;
   --secondary-foreground: #cecfff;
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  --accent: #f5f5f5;
   --accent-foreground: oklch(0.205 0 0);
   --error: #ff0000;
   --error-foreground: #ffd1d1;
   --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --input: #e5e5e5;
+  --ring: #a1a1a1;
+
+  --background: #F5F5F5;
+  --primary: #2E3192;
+  --light-gray: #e5e5e5;
+  --gray: #71717A;
+  --dark-gray: #404040;
+  --balck: #000000;
+  --white: #FFFFFF;
+  --red: #ef4444;
+  --light-red: #fee2e2;
 }
 
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-Instrument-sans);
-  --font-nunito: var(--font-nunito);
+  --color-black: var(--balck);
+  --color-white: var(--white);
   --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
   --color-gray: var(--gray);
-  --color-error: var(--error);
-  --color-error-foreground: var(--error-foreground);
-} 
+  --color-light-gray: var(--light-gray);
+  --color-dark-gray: var(--dark-gray);
+  --color-red: var(--red);
+  --color-light-red: var(--light-red);
+}
 
-html{
+
+html {
   width: 100%;
   height: 100%;
 }
@@ -58,7 +58,8 @@ body {
   height: 100%;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-mulish-sans);
+  /* letter-spacing: -0.5px; */
 }
 
 .container {
@@ -74,7 +75,7 @@ body {
   }
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 1220px) {
   .container {
     max-width: 1200px;
   }

@@ -1,9 +1,12 @@
 import { ProductCard } from "@/app/components";
 import ProductModal from "@/app/components/ProductModal/ProductModal";
+import { useProducts } from "@/app/hooks/products/useProducts";
 import { useProductModal } from "@/app/shared/lib/hooks/useProductModal";
-import { useProducts } from "@/app/shared/lib/hooks/useProducts";
-import { useShuffledProducts } from "@/app/shared/lib/hooks/useShuffledProducts";
+// import { useProductModal } from "@/app/shared/lib/hooks/useProductModal";
+// import { useProducts } from "@/app/shared/lib/hooks/useProducts";
+// import { useShuffledProducts } from "@/app/shared/lib/hooks/useShuffledProducts";
 import { ProductsType } from "@/app/types";
+import { useState } from "react";
 
 function RecomendedProductsSkeleton() {
   return (
@@ -58,9 +61,13 @@ function normalizeProducts(products: ProductsType[]): ProductsType[] {
 function RecomendedProducts() {
   const { data: products, isLoading, isError } = useProducts();
   const filtred = normalizeProducts(products)
-  const recomendedProduct = useShuffledProducts<ProductsType>(filtred, 20);
+  // const recomendedProduct = useShuffledProducts<ProductsType>(filtred, 20);
 
   const { selectedProduct, openModal, closeModal } = useProductModal();
+
+  // const [selectedProduct, setSelectedProduct] = useState()
+  // const [openModal, setOpenModal] = useState()
+  // const [closeModal, setCloseModal] = useState()
 
   if (isLoading) return <RecomendedProductsSkeleton />;
   if (isError) return <div>Error</div>;
@@ -75,7 +82,7 @@ function RecomendedProducts() {
             </h1>
           </div>
           <div className="mt-6 mb-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {recomendedProduct.map((product: ProductsType, i) => (
+            {products.map((product: ProductsType, i: number) => (
               <ProductCard
                 key={i}
                 product={product}

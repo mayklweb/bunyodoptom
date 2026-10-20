@@ -3,17 +3,16 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useCategoryStore } from "@/app/store/useCategoryStore";
-import { useBrands } from "@/app/shared/lib/hooks/useBrands";
 import { useProductFilters } from "../shared/lib/useProductFilters";
 import { CategoriesType, ProductsType } from "@/app/types";
-import { useCategories } from "@/app/shared/lib/hooks/useCategories";
-import { useProducts } from "@/app/shared/lib/hooks/useProducts";
 import { FilterPanel } from "../shared/ui/FilterPanel";
 import { ProductCard } from "@/app/components";
 import { FilterBottomSheet } from "../desktop/FilterBottomSheet";
 import { FilterIcon } from "@/app/shared/icons";
-import Link from "next/link";
+import { useCategories } from "@/app/hooks/categories/useCategories";
+import { useProducts } from "@/app/hooks/products/useProducts";
+import { useBrands } from "@/app/hooks/brands/useBrands";
+import { useCategoryStore } from "@/app/store/useCategoryStore";
 
 export default function CategoryProductsPage() {
   const router = useRouter();
@@ -44,25 +43,20 @@ export default function CategoryProductsPage() {
 
   const productsReady = !productsLoading && !!allProducts;
 
-  const handleDesktopCategoryClick = (category: CategoriesType) => {
-    setSelectedCategoryId(category.id);
-    router.push(`/categories/${category.id}`);
-  };
-
   return (
     <section>
       <div className="container">
         <div>
-          <div className="flex h-full overflow-hidden mt-24">
-            {/* ── DESKTOP LEFT: categories sidebar ── */}
-
+          <div className="flex h-full overflow-hidden mt-20">
             {/* ── MAIN AREA ── */}
             <div className="flex flex-col flex-1 overflow-hidden">
               {/* Header */}
-              <div className="flex items-center gap-3  pb-4 shrink-0">
+              <div className="flex items-center gap-3 pb-4 shrink-0">
                 {/* Back button — mobile only */}
                 <button
+                  type="button"
                   onClick={() => router.back()}
+                  aria-label="Orqaga"
                   className="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white shrink-0"
                 >
                   <svg
@@ -84,7 +78,7 @@ export default function CategoryProductsPage() {
                   {categoriesLoading ? (
                     <div className="h-5 w-32 bg-gray-100 animate-pulse rounded-lg" />
                   ) : (
-                    <h1 className="text-lg font-bold text-gray-900 truncate">
+                    <h1 className="text-base font-bold text-gray-900 truncate">
                       {activeCategory?.name ?? "Mahsulotlar"}
                     </h1>
                   )}
@@ -95,20 +89,9 @@ export default function CategoryProductsPage() {
                   )}
                 </div>
 
-                {/* Desktop filter button */}
-                {/* <div className="hidden lg:flex items-center gap-2">
-                  {activeCount > 0 && (
-                    <button
-                      onClick={resetAll}
-                      className="text-xs text-primary font-medium hover:underline"
-                    >
-                      Tozalash
-                    </button>
-                  )}
-                </div> */}
-
                 {/* Mobile filter button */}
                 <button
+                  type="button"
                   onClick={() => {
                     setPendingFilters(filters);
                     setSheetOpen(true);
@@ -126,7 +109,7 @@ export default function CategoryProductsPage() {
               </div>
 
               {/* Body: desktop filter panel + products */}
-              <div className="flex flex-1 overflow-hidden gap-4 ">
+              <div className="flex flex-1 overflow-hidden gap-4">
                 {/* Desktop filter sidebar */}
                 <aside className="hidden lg:flex flex-col w-56 shrink-0 overflow-y-auto sticky top-5">
                   <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-4 flex flex-col gap-4">
@@ -160,6 +143,7 @@ export default function CategoryProductsPage() {
                       </p>
                       {activeCount > 0 && (
                         <button
+                          type="button"
                           onClick={resetAll}
                           className="mt-3 px-4 py-2 rounded-xl bg-primary text-white text-sm font-medium"
                         >
@@ -169,10 +153,8 @@ export default function CategoryProductsPage() {
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                      {filtered.map((product: ProductsType, i) => (
-                        <Link key={i} href={`/product/${product.id}`}>
-                      <ProductCard key={product.id} product={product} />
-                        </Link>
+                      {filtered.map((product: ProductsType) => (
+                        <ProductCard key={product.id} product={product} />
                       ))}
                     </div>
                   )}

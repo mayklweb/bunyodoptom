@@ -6,9 +6,6 @@ interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: any;
-  addresses: any[];
-  selectedAddressId: number | null;
-  onSelectAddress: (id: number) => void;
   paymentMethod: "cash" | "click";
   onPaymentMethodChange: (method: "cash" | "click") => void;
   totalCount: number;
@@ -22,9 +19,6 @@ export function CheckoutModal({
   isOpen,
   onClose,
   user,
-  addresses,
-  selectedAddressId,
-  onSelectAddress,
   paymentMethod,
   onPaymentMethodChange,
   totalCount,
@@ -62,13 +56,6 @@ export function CheckoutModal({
           <span className="font-semibold text-gray-800">{totalCount} dona</span>
         </div>
 
-        <AddressSelector
-          addresses={addresses}
-          selectedId={selectedAddressId}
-          onSelect={onSelectAddress}
-          variant="mobile"
-        />
-
         <PaymentMethodSelector
           selected={paymentMethod}
           onChange={onPaymentMethodChange}
@@ -93,12 +80,6 @@ export function CheckoutModal({
             ? "Yuborilmoqda..."
             : `Tasdiqlash — ${total.toLocaleString()} so'm`}
         </button>
-
-        {!selectedAddressId && (
-          <p className="text-xs text-center text-red-400 -mt-2">
-            Buyurtma berish uchun manzil tanlang
-          </p>
-        )}
 
         <button
           onClick={onClose}

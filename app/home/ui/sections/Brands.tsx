@@ -2,15 +2,13 @@
 import { CategoriesType } from "@/app/types";
 import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
 
 import { Autoplay, Navigation } from "swiper/modules";
 import { LeftIcon, RightIcon } from "@/app/shared/icons";
 import Link from "next/link";
 import Image from "next/image";
-import { useBrands } from "@/app/shared/lib/hooks/useBrands";
+import { useBrands } from "@/app/hooks/brands/useBrands";
+// import { useBrands } from "@/app/shared/lib/hooks/useBrands";
 
 function BrandsSkeleton() {
   return (

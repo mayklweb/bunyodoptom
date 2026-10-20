@@ -1,56 +1,42 @@
-import { ProfileFieldProps } from "@/app/profile/model/types/types";
-import { CheckIcon, EditIcon } from "@/app/shared/icons";
+import type { ChangeEvent, KeyboardEvent, Ref } from "react";
 
+interface ProfileFieldProps {
+  label: string;
+  value: string;
+  /** Whether this specific input is currently typeable. Driven by the
+   *  page-level edit mode AND this field's own `disabled` config. */
+  editable: boolean;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
+  inputRef?: Ref<HTMLInputElement>;
+}
+
+/**
+ * Pure input field — no per-field buttons. Editing is controlled globally
+ * by the parent (PersonalInfo), which has a single Edit/Save button that
+ * enables/disables every field's `editable` prop at once.
+ */
 export function ProfileField({
   label,
   value,
-  editing,
-  disabled = false,
-  saving,
+  editable,
   onChange,
-  onToggle,
-  onSave,
-  onCancel,
+  onKeyDown,
   inputRef,
 }: ProfileFieldProps) {
   return (
     <div>
-      <label>{label}</label>
-      <div className="w-full px-4 py-3 mt-1 flex items-center bg-gray rounded-xl gap-2">
-        <input
-          ref={inputRef}
-          type="text"
-          value={value}
-          disabled={!editing || disabled}
-          onChange={onChange}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") onSave?.();
-            if (e.key === "Escape") onCancel?.();
-          }}
-          className="text-gray-600 flex-auto outline-none disabled:bg-transparent focus:text-black"
-        />
-
-        {!disabled && (
-          editing ? (
-            <button
-              type="button"
-              onClick={onSave}
-              disabled={saving || !value}
-              className="cursor-pointer disabled:opacity-40"
-            >
-              {saving ? (
-                <span className="w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin inline-block" />
-              ) : (
-                <CheckIcon className="w-5 h-5 text-primary" />
-              )}
-            </button>
-          ) : (
-            <button type="button" onClick={onToggle} className="cursor-pointer">
-              <EditIcon className="w-5 h-5 text-gray-600" />
-            </button>
-          )
-        )}
-      </div>
+      <label className="text-sm text-gray">{label}</label>
+   
+      <input
+        ref={inputRef}
+        type="text"
+        value={value}
+        disabled={!editable}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        className="mt-1 w-full rounded-xl bg-white px-3 py-2 text-black outline-none focus:text-black disabled:text-gray"
+      />
     </div>
   );
 }

@@ -13,7 +13,7 @@ export function SelectAllToggle({
 }: SelectAllToggleProps) {
   return (
     <div
-      className="flex items-center gap-3 cursor-pointer select-none bg-accent p-4 rounded-xl"
+      className="flex items-center gap-3 cursor-pointer select-none bg-white p-4 rounded-xl"
       onClick={onToggle}
     >
       <div
