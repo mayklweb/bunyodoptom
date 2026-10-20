@@ -4,14 +4,16 @@ import Image from "next/image";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 // import { useProduct, useProducts } from "@/app/shared/lib/hooks/useProducts";
-import { useCartStore } from "@/app/store/CartStore";
+// import { useCartStore } from "@/app/store/CartStore";
 import { FavoriteIcon, MinusIcon, PlusIcon } from "@/app/shared/icons";
-import { useFavoritesStore } from "@/app/store/favoritesStore";
+// import { useFavoritesStore } from "@/app/store/favoritesStore";
 // import { useShuffledProducts } from "@/app/shared/lib/hooks/useShuffledProducts";
 import { ProductsType } from "@/app/types";
 import Link from "next/link";
 import { useProduct } from "@/app/hooks/products/useProduct";
 import { useProducts } from "@/app/hooks/products/useProducts";
+import { useCartStore } from "@/app/store/cart.store";
+import { useFavoriteStore } from "@/app/store/favourite.store";
 
 function ProductSkeleton() {
   return (
@@ -68,7 +70,7 @@ function Product() {
   const id = Number(params?.id);
   const { data: product, isLoading, isError } = useProduct(id);
   const { addToCart, inc, dec, getQuantity, remove } = useCartStore();
-  const { toggleFavorite, isFavorite } = useFavoritesStore();
+  const { toggleFavorite, isFavorite } = useFavoriteStore();
 
   const { data: products } = useProducts();
   const filtred = normalizeProducts(products);
