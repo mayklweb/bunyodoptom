@@ -3,9 +3,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCartStore } from "../store/CartStore";
-import { useCheckout } from "../shared/lib/hooks/useCheckout";
-import { useAddresses } from "../shared/lib/hooks/useAddresses";
+// import { useCartStore } from "../store/CartStore";
+// import { useCheckout } from "../shared/lib/hooks/useCheckout";
+// import { useAddresses } from "../shared/lib/hooks/useAddresses";
 import {
   CartIcon,
   CheckIcon,
@@ -13,7 +13,11 @@ import {
   DownIcon,
   LocationIcon,
 } from "../shared/icons";
-import { useCreateMarket, useMarkets } from "../shared/lib/hooks/useMarket";
+import { useCreateMarket } from "../hooks/markets/useCreateMarket";
+import { useCartStore } from "../store/cart.store";
+import { useCheckout } from "../hooks/orders/useCheckout";
+import { useMarket } from "../hooks/markets/useMarkets";
+// import { useCreateMarket, useMarkets } from "../shared/lib/hooks/useMarket";
 
 // ─── Market Registration Modal ───────────────────────────────────────────────
 
@@ -106,9 +110,9 @@ function MarketRegisterModal({ onSuccess, onClose }: MarketModalProps) {
 function Checkout() {
   const router = useRouter();
   const { selectedItems, total, totalCount } = useCartStore();
-  const { data: addresses } = useAddresses();
+  // const { data: addresses } = useAddresses();
   const { mutate: checkout, isPending } = useCheckout();
-  const { data: markets, isLoading: isMarketsLoading } = useMarkets();
+  const { data: markets, isLoading: isMarketsLoading } = useMarket();
 
   const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
     null,
@@ -118,7 +122,7 @@ function Checkout() {
   const [notes, setNotes] = useState("");
   const [showMarketModal, setShowMarketModal] = useState(false);
 
-  const selectedAddress = addresses?.find((a) => a.id === selectedAddressId);
+  // const selectedAddress = addresses?.find((a) => a.id === selectedAddressId);
   const products = selectedItems().map((item) => ({
     ...item,
     qty: item.count,
@@ -127,14 +131,14 @@ function Checkout() {
   const proceedToCheckout = (marketId: number | null) => {
     checkout(
       {
-        address_id: selectedAddressId,
-        market_id: marketId,
+        // address_id: selectedAddressId,
+        // market_id: marketId,
         payment_method: paymentMethod,
-        payed: false,
+        // payed: false,
         products,
         notes,
         user_id: 0,
-        total_amount: 0
+        total_amount: 0,
       },
       {
         onSuccess: () => router.push("/orders"),
@@ -209,65 +213,6 @@ function Checkout() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Address selector */}
-            <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-              <div
-                className="flex items-center justify-between px-4 py-3.5 cursor-pointer"
-                onClick={() => setIsAddressOpen((p) => !p)}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <LocationIcon className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Yetkazish manzili</p>
-                    <p className="text-sm font-medium">
-                      {selectedAddress
-                        ? `${selectedAddress.region}, ${selectedAddress.district}`
-                        : "Manzil tanlang"}
-                    </p>
-                    {selectedAddress && (
-                      <p className="text-xs text-gray-400 truncate max-w-56">
-                        {selectedAddress.address}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <DownIcon
-                  className={`w-4 h-4 text-gray-400 transition-transform ${
-                    isAddressOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </div>
-
-              {isAddressOpen && (
-                <div className="border-t border-gray-100">
-                  {addresses?.map((addr) => (
-                    <div
-                      key={addr.id}
-                      onClick={() => {
-                        setSelectedAddressId(addr.id);
-                        setIsAddressOpen(false);
-                      }}
-                      className={`flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors ${
-                        selectedAddressId === addr.id ? "bg-primary/5" : ""
-                      }`}
-                    >
-                      <div>
-                        <p className="text-sm font-medium">
-                          {addr.region}, {addr.district}
-                        </p>
-                        <p className="text-xs text-gray-400">{addr.address}</p>
-                      </div>
-                      {selectedAddressId === addr.id && (
-                        <CheckIcon className="w-4 h-4 text-primary shrink-0" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Payment method */}

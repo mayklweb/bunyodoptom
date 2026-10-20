@@ -21,11 +21,12 @@ export type OrderProduct = {
 // Backendga yuboriladigan buyurtma
 export type CheckoutPayload = {
   user_id: number
-  market_id: number;
+  market_id?: number;
   payment_method: PaymentMethod;
   notes?: string;
   idempotency_key?: string;
   products: OrderProduct[];
+  total_amount: number
 };
 
 // Backenddan keladigan buyurtma
