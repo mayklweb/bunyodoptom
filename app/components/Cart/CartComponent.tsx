@@ -134,7 +134,7 @@ function CartComponent() {
       {
         user_id: parseInt(user.id),
         total_amount: totalAmount,
-        address_id: selectedAddressId,
+        // address_id: selectedAddressId,
         market_id: marketId,
         payment_method: paymentMethod,
         payed: false,

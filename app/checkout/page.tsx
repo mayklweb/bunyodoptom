@@ -134,11 +134,12 @@ function Checkout() {
         // address_id: selectedAddressId,
         // market_id: marketId,
         payment_method: paymentMethod,
-        // payed: false,
+        payed: false,
         products,
         notes,
         user_id: 0,
         total_amount: 0,
+        status: ""
       },
       {
         onSuccess: () => router.push("/orders"),

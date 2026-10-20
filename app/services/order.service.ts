@@ -27,6 +27,8 @@ export type CheckoutPayload = {
   idempotency_key?: string;
   products: OrderProduct[];
   total_amount: number
+  payed: boolean
+  status: string
 };
 
 // Backenddan keladigan buyurtma
