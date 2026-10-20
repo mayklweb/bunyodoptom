@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-// import { productService } from "@/services/product.service";
 import { categoryKeys } from "./category.keys";
-import { categoryService } from "@/services/category.service";
+import { categoryService } from "@/app/services/category.service";
 
 export function useCategory(id?: string | number) {
   return useQuery({
