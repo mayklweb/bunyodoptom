@@ -259,7 +259,7 @@ function LoginForm() {
               )}
             </Field>
 
-            {/* Server error + submit */}
+            {/* Server error + submit
             <Field>
               {isError && (
                 <FieldError
@@ -276,7 +276,7 @@ function LoginForm() {
                 )}
                 {isPending ? "Kirilmoqda..." : "Kirish"}
               </button>
-            </Field>
+            </Field> */}
 
             <FieldSeparator>yoki</FieldSeparator>
 
