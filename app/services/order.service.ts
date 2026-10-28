@@ -15,20 +15,22 @@ export type OrderProduct = {
   images?: {
     url: string;
   }[];
-  [key: string]: unknown;
+  // [key: string]: unknown;
 };
 
-// Backendga yuboriladigan buyurtma
+// Backendga yuboriladigan mahsulot
+export type CheckoutProductPayload = {
+  id: number;
+  qty: number;
+};
+
+// Checkout uchun backendga yuboriladigan ma'lumotlar
 export type CheckoutPayload = {
-  user_id: number
-  market_id?: number;
+  market_id: number;
   payment_method: PaymentMethod;
   notes?: string;
   idempotency_key?: string;
-  products: OrderProduct[];
-  total_amount: number
-  payed: boolean
-  status: string
+  products: CheckoutProductPayload[];
 };
 
 // Backenddan keladigan buyurtma
@@ -87,7 +89,7 @@ export const orderService = {
       // backend faqat id va qty ni o'qiydi
       products: payload.products.map((p) => ({
         id: p.id,
-        qty: p.qty ?? p.count ?? 1,
+        qty: p.qty ?? 1,
       })),
     };
 
@@ -106,10 +108,7 @@ export const orderService = {
     id: number | string,
     payload: UpdateOrderStatusPayload,
   ): Promise<Order> => {
-    const { data } = await api.put(
-      ENDPOINTS.ORDERS.UPDATE_STATUS(id),
-      payload,
-    );
+    const { data } = await api.put(ENDPOINTS.ORDERS.UPDATE_STATUS(id), payload);
 
     return data.data;
   },

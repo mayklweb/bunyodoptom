@@ -63,7 +63,6 @@ function CartComponent() {
   const [showMarketModal, setShowMarketModal] = useState(false);
   const [pendingMarketId, setPendingMarketId] = useState<number | null>(null);
 
-
   useEffect(() => {
     document.body.style.overflow = isModalOpen ? "hidden" : "";
     return () => {
@@ -118,28 +117,24 @@ function CartComponent() {
 
     const items = selectedItems();
 
+    if (items.length === 0) {
+      alert("Iltimos, mahsulotlarni tanlang.");
+      return;
+    }
+
     const products = items.map((item) => ({
       id: item.id,
-      name: item.name,
-      price: item.price,
-      qty: item.count ?? 1,
+      qty: item.count,
     }));
-
-    const totalAmount = items.reduce(
-      (sum, item) => sum + item.price * item.count,
-      0,
-    );
 
     checkout(
       {
-        user_id: parseInt(user.id),
-        total_amount: totalAmount,
-        // address_id: selectedAddressId,
         market_id: marketId,
         payment_method: paymentMethod,
-        payed: false,
-        status: "preparing",
-        products: products,
+        products: products.map((product) => ({
+          id: product.id,
+          qty: product.qty,
+        })),
       },
       {
         onSuccess: () => {

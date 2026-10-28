@@ -65,7 +65,7 @@ export function setupInterceptors(api: AxiosInstance) {
         error.response?.status === 401 &&
         !!currentToken &&
         sentAuth === `Bearer ${currentToken}`;
-
+        
       if (isSessionExpired) {
         useAuthStore.getState().clearAuth();
         queryClient.clear();

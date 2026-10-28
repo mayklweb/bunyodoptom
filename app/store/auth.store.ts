@@ -49,8 +49,6 @@ export const useAuthStore = create<AuthState>()(
       },
 
       clearAuth: () => {
-        useCartStore.getState().clearCart();
-
         set({
           token: null,
           user: null,
